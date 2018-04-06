@@ -1,0 +1,9 @@
+If a VSTO add-in refuses to load on a workstation, the following will
+make the system display the full error message instead of just saying
+that it was not able to load.
+
+set the environment variable:
+
+VSTO_SUPPRESSDISPLAYALERTS to the value 0 and it will display the message
+
+First troubleshooting tip. Set the environment variable VSTO_SUPPRESSDISPLAYALERTS to 0. I just use the Advanced tab in the System Properties dialog so the environment variable is machine wide.

@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <Product Id="CF176F95-B410-4F77-87B8-D88DE71987D6" Name="Spira MS Office Add-Ins" Language="1033" Version="5.0.0.0"
+           Manufacturer="Inflectra" UpgradeCode="09F940F6-3DF6-4D8B-AB52-F748B1078E0E">
+    <Package Id="*" InstallerVersion="300" Compressed="yes" Description="Spira MS Office 2010+ Add-Ins"
+             Keywords="Automated testing, functional testing, performance testing, test management" InstallScope="perMachine"
+             Comments="Installs the add-ins for MS-Office 2010 that allow integration with SpiraTeam"
+             />
+
+    <Condition Message="You need to be an administrator to install this product.">
+      Privileged
+    </Condition>
+    <Condition Message="This setup requires the .NET Framework 4.0 or higher.">
+      <![CDATA[MsiNetAssemblySupport >= "4.0.30319"]]>
+    </Condition>
+
+    <Property Id="OSTYPE">
+      <RegistrySearch Id="S_OSTYPE" Root="HKLM" Key="SYSTEM\CurrentControlSet\Control\Session Manager\Environment" Name="PROCESSOR_ARCHITECTURE" Type="raw" />
+    </Property>
+    <Property Id="VSTOEXISTS">
+      <DirectorySearch Id="S_VSTO10_0" Path="[CommonFilesFolder]\Microsoft Shared\VSTO\10.0" Depth="0" />
+    </Property>
+    <Condition Message="You need to install the Microsoft VSTO 2010 Runtime ([OSTYPE]) from the Inflectra website - http://www.inflectra.com/Downloads/VisualStudioToolsOffice10.0_[OSTYPE].exe">
+      <![CDATA[VSTOEXISTS OR (OSTYPE = "x86")]]>
+    </Condition>
+    <Condition Message="You need to install the Microsoft VSTO 2010 Runtime ([OSTYPE]) from the Inflectra website - http://www.inflectra.com/Downloads/VisualStudioToolsOffice10.0_[OSTYPE].exe">
+      <![CDATA[VSTOEXISTS OR (OSTYPE = "x64")]]>
+    </Condition>
+
+    <Property Id="PREVIOUSVERSIONSINSTALLED" Secure="yes" />
+    <Upgrade Id="09F940F6-3DF6-4D8B-AB52-F748B1078E0E">
+      <UpgradeVersion
+         Minimum="2.3.0.0" Maximum="5.0.0.0"
+         Property="PREVIOUSVERSIONSINSTALLED"
+         IncludeMinimum="yes" IncludeMaximum="no" />
+    </Upgrade>
+
+    <Media Id="1" Cabinet="MsOffice2010AddIns.cab" EmbedCab="yes" />
+    <WixVariable Id="WixUILicenseRtf" Value="Files\License.rtf" />
+    <WixVariable Id="WixUIBannerBmp" Value="Bitmaps\bannrbmp.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="Bitmaps\dlgbmp.bmp" />
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="D_MyCompany" Name="Inflectra">
+          <Directory Id="INSTALLDIR" Name="Spira MS Office 2010 Add-Ins">
+            <Component Id="C_MsOfficeCommon" Guid="7BB61210-6A9C-4584-B6B4-226EFFC3C16B">
+              <File Id="F_Microsoft.VisualStudio.Tools.Applications.Runtime.dll" Name="Microsoft.VisualStudio.Tools.Applications.Runtime.dll" Source="C:\Program Files\Reference Assemblies\Microsoft\VSTO40\v4.0.Framework\Microsoft.Office.Tools.Common.v4.0.Utilities.dll" KeyPath="yes" />
+              <File Id="F_Microsoft.Office.Tools.v4.0.Framework.dll" Name="Microsoft.Office.Tools.v4.0.Framework.dll" Source="C:\Program Files\Reference Assemblies\Microsoft\VSTO40\v4.0.Framework\Microsoft.Office.Tools.v4.0.Framework.dll" />
+              <File Id="F_Microsoft.Office.Tools.Common.dll" Name="Microsoft.Office.Tools.Common.dll" Source="C:\Program Files\Reference Assemblies\Microsoft\VSTO40\v4.0.Framework\Microsoft.Office.Tools.Common.dll" />
+              <File Id="F_Microsoft.Office.Tools.dll" Name="Microsoft.Office.Tools.dll" Source="C:\Program Files\Reference Assemblies\Microsoft\VSTO40\v4.0.Framework\Microsoft.Office.Tools.dll" />
+              <File Id="F_Microsoft.Office.Tools.Common.v4.0.Utilities.dll" Name="Microsoft.Office.Tools.Common.v4.0.Utilities.dll" Source="C:\Program Files\Reference Assemblies\Microsoft\VSTO40\v4.0.Framework\Microsoft.Office.Tools.Common.v4.0.Utilities.dll" />
+            </Component>
+            <Component Id="C_SpiraExcelAddIn" Guid="8DD29D54-9D26-481B-8550-3868D5E26CFA">
+              <File Id="F_SpiraExcelAddIn_dll" Name="SpiraExcelAddIn.dll" Source="../ExcelAddIn/bin/Release/SpiraExcelAddIn.dll" KeyPath="yes" />
+              <File Id="F_SpiraExcelAddIn_vsto" Name="SpiraExcelAddIn.vsto" Source="../ExcelAddIn/bin/Release/SpiraExcelAddIn.vsto" />
+              <File Id="F_SpiraExcelAddIn_dll_manifest" Name="SpiraExcelAddIn.dll.manifest" Source="../ExcelAddIn/bin/Release/SpiraExcelAddIn.dll.manifest" />
+              <File Id="F_Microsoft.Office.Tools.Excel.dll" Name="Microsoft.Office.Tools.Excel.dll" Source="C:\Program Files\Reference Assemblies\Microsoft\VSTO40\v4.0.Framework\Microsoft.Office.Tools.Excel.dll" />
+              <File Id="F_Microsoft.Office.Tools.Excel.v4.0.Utilities.dll" Name="Microsoft.Office.Tools.Excel.v4.0.Utilities.dll" Source="C:\Program Files\Reference Assemblies\Microsoft\VSTO40\v4.0.Framework\Microsoft.Office.Tools.Excel.v4.0.Utilities.dll" />
+              <RegistryValue Id="R_SpiraExcelAddIn_FriendlyName" Root="HKLM"
+                 Key="Software\Microsoft\Office\Excel\AddIns\SpiraExcelAddIn"
+                 Name="FriendlyName"
+                 Value="SpiraExcelAddIn"
+                 Type="string" />
+              <RegistryValue Id="R_SpiraExcelAddIn_Description" Root="HKLM"
+                 Key="Software\Microsoft\Office\Excel\AddIns\SpiraExcelAddIn"
+                 Name="Description"
+                 Value="SpiraTeam Importer for MS-Excel"
+                 Type="string" />
+              <RegistryValue Id="R_SpiraExcelAddIn_Manifest" Root="HKLM"
+                 Key="Software\Microsoft\Office\Excel\AddIns\SpiraExcelAddIn"
+                 Name="Manifest"
+                 Value="[INSTALLDIR]SpiraExcelAddIn.vsto|vstolocal"
+                 Type="string" />
+              <RegistryValue Id="R_SpiraExcelAddIn_LoadBehavior" Root="HKLM"
+                 Key="Software\Microsoft\Office\Excel\AddIns\SpiraExcelAddIn"
+                 Name="LoadBehavior"
+                 Value="3"
+                 Type="integer" />
+              <RegistryValue Id="R_SpiraExcelAddIn_CommandLineSafe" Root="HKLM"
+                 Key="Software\Microsoft\Office\Excel\AddIns\SpiraExcelAddIn"
+                 Name="CommandLineSafe"
+                 Value="1"
+                 Type="integer" />
+            </Component>
+            <Component Id="C_SpiraProjectAddIn" Guid="D213D383-FCAA-4AD1-BD6E-730CADA65E01">
+              <File Id="F_SpiraProjectAddIn_dll" Name="SpiraProjectAddIn.dll" Source="../SpiraProjectAddIn/bin/Release/SpiraProjectAddIn.dll" KeyPath="yes" />
+              <File Id="F_SpiraProjectAddIn_vsto" Name="SpiraProjectAddIn.vsto" Source="../SpiraProjectAddIn/bin/Release/SpiraProjectAddIn.vsto" />
+              <File Id="F_SpiraProjectAddIn_dll_manifest" Name="SpiraProjectAddIn.dll.manifest" Source="../SpiraProjectAddIn/bin/Release/SpiraProjectAddIn.dll.manifest" />
+              <RegistryValue Id="R_SpiraProjectAddIn_FriendlyName" Root="HKLM"
+                 Key="Software\Microsoft\Office\MS Project\AddIns\SpiraProjectAddIn"
+                 Name="FriendlyName"
+                 Value="SpiraProjectAddIn"
+                 Type="string" />
+              <RegistryValue Id="R_SpiraProjectAddIn_Description" Root="HKLM"
+                 Key="Software\Microsoft\Office\MS Project\AddIns\SpiraProjectAddIn"
+                 Name="Description"
+                 Value="SpiraTeam Importer for MS-Project"
+                 Type="string" />
+              <RegistryValue Id="R_SpiraProjectAddIn_Manifest" Root="HKLM"
+                 Key="Software\Microsoft\Office\MS Project\AddIns\SpiraProjectAddIn"
+                 Name="Manifest"
+                 Value="[INSTALLDIR]SpiraProjectAddIn.vsto|vstolocal"
+                 Type="string" />
+              <RegistryValue Id="R_SpiraProjectAddIn_LoadBehavior" Root="HKLM"
+                 Key="Software\Microsoft\Office\MS Project\AddIns\SpiraProjectAddIn"
+                 Name="LoadBehavior"
+                 Value="3"
+                 Type="integer" />
+              <RegistryValue Id="R_SpiraProjectAddIn_CommandLineSafe" Root="HKLM"
+                 Key="Software\Microsoft\Office\MS Project\AddIns\SpiraProjectAddIn"
+                 Name="CommandLineSafe"
+                 Value="1"
+                 Type="integer" />
+            </Component>
+            <Component Id="C_SpiraWordAddIn" Guid="8EE6BD82-75A2-415A-B176-7AFD1B4BFECA">
+              <File Id="F_SpiraWordAddIn_dll" Name="SpiraWordAddIn.dll" Source="../SpiraWordAddIn/bin/Release/SpiraWordAddIn.dll" KeyPath="yes" />
+              <File Id="F_SpiraWordAddIn_vsto" Name="SpiraWordAddIn.vsto" Source="../SpiraWordAddIn/bin/Release/SpiraWordAddIn.vsto" />
+              <File Id="F_SpiraWordAddIn_dll_manifest" Name="SpiraWordAddIn.dll.manifest" Source="../SpiraWordAddIn/bin/Release/SpiraWordAddIn.dll.manifest" />
+              <File Id="F_Microsoft.Office.Tools.Word.dll" Name="Microsoft.Office.Tools.Word.dll" Source="C:\Program Files\Reference Assemblies\Microsoft\VSTO40\v4.0.Framework\Microsoft.Office.Tools.Word.dll" />
+              <File Id="F_Microsoft.Office.Tools.Word.v4.0.Utilities.dll" Name="Microsoft.Office.Tools.Word.v4.0.Utilities.dll" Source="C:\Program Files\Reference Assemblies\Microsoft\VSTO40\v4.0.Framework\Microsoft.Office.Tools.Word.v4.0.Utilities.dll" />
+              <RegistryValue Id="R_SpiraWordAddIn_FriendlyName" Root="HKLM"
+                 Key="Software\Microsoft\Office\Word\AddIns\SpiraWordAddIn"
+                 Name="FriendlyName"
+                 Value="SpiraWordAddIn"
+                 Type="string" />
+              <RegistryValue Id="R_SpiraWordAddIn_Description" Root="HKLM"
+                 Key="Software\Microsoft\Office\Word\AddIns\SpiraWordAddIn"
+                 Name="Description"
+                 Value="SpiraTeam Importer for MS-Word"
+                 Type="string" />
+              <RegistryValue Id="R_SpiraWordAddIn_Manifest" Root="HKLM"
+                 Key="Software\Microsoft\Office\Word\AddIns\SpiraWordAddIn"
+                 Name="Manifest"
+                 Value="[INSTALLDIR]SpiraWordAddIn.vsto|vstolocal"
+                 Type="string" />
+              <RegistryValue Id="R_SpiraWordAddIn_LoadBehavior" Root="HKLM"
+                 Key="Software\Microsoft\Office\Word\AddIns\SpiraWordAddIn"
+                 Name="LoadBehavior"
+                 Value="3"
+                 Type="integer" />
+              <RegistryValue Id="R_SpiraWordAddIn_CommandLineSafe" Root="HKLM"
+                 Key="Software\Microsoft\Office\Word\AddIns\SpiraWordAddIn"
+                 Name="CommandLineSafe"
+                 Value="1"
+                 Type="integer" />
+            </Component>
+            <Component Id="C_SpiraOffice_64BitEntries" Guid="AD212C86-6A14-45BC-ADC5-690C7F9A0E27" Win64="yes">
+              <Condition>VersionNT64</Condition>
+              <RegistryValue Id="R_SpiraExcelAddIn_FriendlyName_64" Root="HKLM"
+                 Key="Software\Microsoft\Office\Excel\AddIns\SpiraExcelAddIn"
+                 Name="FriendlyName"
+                 Value="SpiraExcelAddIn"
+                 Type="string" />
+              <RegistryValue Id="R_SpiraExcelAddIn_Description_64" Root="HKLM"
+                 Key="Software\Microsoft\Office\Excel\AddIns\SpiraExcelAddIn"
+                 Name="Description"
+                 Value="SpiraTeam Importer for MS-Excel"
+                 Type="string" />
+              <RegistryValue Id="R_SpiraExcelAddIn_Manifest_64" Root="HKLM"
+                 Key="Software\Microsoft\Office\Excel\AddIns\SpiraExcelAddIn"
+                 Name="Manifest"
+                 Value="[INSTALLDIR]SpiraExcelAddIn.vsto|vstolocal"
+                 Type="string" />
+              <RegistryValue Id="R_SpiraExcelAddIn_LoadBehavior_64" Root="HKLM"
+                 Key="Software\Microsoft\Office\Excel\AddIns\SpiraExcelAddIn"
+                 Name="LoadBehavior"
+                 Value="3"
+                 Type="integer" />
+              <RegistryValue Id="R_SpiraExcelAddIn_CommandLineSafe_64" Root="HKLM"
+                 Key="Software\Microsoft\Office\Excel\AddIns\SpiraExcelAddIn"
+                 Name="CommandLineSafe"
+                 Value="1"
+                 Type="integer" />
+              <RegistryValue Id="R_SpiraProjectAddIn_FriendlyName_64" Root="HKLM"
+                 Key="Software\Microsoft\Office\MS Project\AddIns\SpiraProjectAddIn"
+                 Name="FriendlyName"
+                 Value="SpiraProjectAddIn"
+                 Type="string" />
+              <RegistryValue Id="R_SpiraProjectAddIn_Description_64" Root="HKLM"
+                 Key="Software\Microsoft\Office\MS Project\AddIns\SpiraProjectAddIn"
+                 Name="Description"
+                 Value="SpiraTeam Importer for MS-Project"
+                 Type="string" />
+              <RegistryValue Id="R_SpiraProjectAddIn_Manifest_64" Root="HKLM"
+                 Key="Software\Microsoft\Office\MS Project\AddIns\SpiraProjectAddIn"
+                 Name="Manifest"
+                 Value="[INSTALLDIR]SpiraProjectAddIn.vsto|vstolocal"
+                 Type="string" />
+              <RegistryValue Id="R_SpiraProjectAddIn_LoadBehavior_64" Root="HKLM"
+                 Key="Software\Microsoft\Office\MS Project\AddIns\SpiraProjectAddIn"
+                 Name="LoadBehavior"
+                 Value="3"
+                 Type="integer" />
+              <RegistryValue Id="R_SpiraProjectAddIn_CommandLineSafe_64" Root="HKLM"
+                 Key="Software\Microsoft\Office\MS Project\AddIns\SpiraProjectAddIn"
+                 Name="CommandLineSafe"
+                 Value="1"
+                 Type="integer" />
+              <RegistryValue Id="R_SpiraWordAddIn_FriendlyName_64" Root="HKLM"
+                 Key="Software\Microsoft\Office\Word\AddIns\SpiraWordAddIn"
+                 Name="FriendlyName"
+                 Value="SpiraWordAddIn"
+                 Type="string" />
+              <RegistryValue Id="R_SpiraWordAddIn_Description_64" Root="HKLM"
+                 Key="Software\Microsoft\Office\Word\AddIns\SpiraWordAddIn"
+                 Name="Description"
+                 Value="SpiraTeam Importer for MS-Word"
+                 Type="string" />
+              <RegistryValue Id="R_SpiraWordAddIn_Manifest_64" Root="HKLM"
+                 Key="Software\Microsoft\Office\Word\AddIns\SpiraWordAddIn"
+                 Name="Manifest"
+                 Value="[INSTALLDIR]SpiraWordAddIn.vsto|vstolocal"
+                 Type="string" />
+              <RegistryValue Id="R_SpiraWordAddIn_LoadBehavior_64" Root="HKLM"
+                 Key="Software\Microsoft\Office\Word\AddIns\SpiraWordAddIn"
+                 Name="LoadBehavior"
+                 Value="3"
+                 Type="integer" />
+              <RegistryValue Id="R_SpiraWordAddIn_CommandLineSafe_64" Root="HKLM"
+                 Key="Software\Microsoft\Office\Word\AddIns\SpiraWordAddIn"
+                 Name="CommandLineSafe"
+                 Value="1"
+                 Type="integer" />
+            </Component>
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <Feature Id="DefaultFeature" Title="Default Feature" Level="1">
+      <ComponentRef Id="C_MsOfficeCommon" />
+      <ComponentRef Id="C_SpiraExcelAddIn" />
+      <ComponentRef Id="C_SpiraProjectAddIn" />
+      <ComponentRef Id="C_SpiraWordAddIn" />
+      <ComponentRef Id="C_SpiraOffice_64BitEntries"/>
+
+      <!-- Note: The following ComponentGroupRef is required to pull in generated authoring from project references. -->
+      <ComponentGroupRef Id="Product.Generated" />
+    </Feature>
+
+    <UIRef Id="WixUI_InstallDir" />
+
+    <Icon Id="App.ico" SourceFile="App.ico" />
+    <Property Id="ARPPRODUCTICON" Value="App.ico" />
+    <Property Id="ARPHELPLINK" Value="http://www.inflectra.com/Support" />
+    <Property Id="ARPHELPTELEPHONE" Value="+1-202-558-6885" />
+    <Property Id="ARPCONTACT" Value="Inflectra" />
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
+
+    <InstallExecuteSequence>
+      <RemoveExistingProducts Before="InstallInitialize" />
+    </InstallExecuteSequence>
+
+  </Product>
+</Wix>
